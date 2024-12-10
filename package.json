@@ -2,6 +2,7 @@
   "name": "job-try",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://Shreyas-M-246418.github.io/job-try",
   "dependencies": {
     "cra-template": "1.2.0",
     "firebase": "^11.0.2",
