@@ -12,6 +12,7 @@ export const AuthProvider = ({ children }) => {
       // Create the OAuth2 session
       const session = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
       setAccessToken(session.$id);
+      await checkUserStatus();
     } catch (error) {
       console.error("OAuth Login Error:", error);
       throw error;
@@ -34,12 +35,15 @@ export const AuthProvider = ({ children }) => {
         console.error("Error checking user status:", error);
       }
       setUser(null);
+      setAccessToken(null);
       return null;
     }
   };
 
   useEffect(() => {
-    checkUserStatus();
+    if (accessToken) {
+      checkUserStatus();
+    }
   }, [accessToken]);
 
   const logout = async () => {
