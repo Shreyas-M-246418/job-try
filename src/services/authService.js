@@ -5,8 +5,8 @@ const authService = {
     try {
       await account.createOAuth2Session(
         'github',
-        `${window.location.origin}/#/jobs`,
-        `${window.location.origin}/#/login`
+        `${window.location.origin}/jobs`,
+        `${window.location.origin}/login`
       );
     } catch (error) {
       console.error('GitHub Login Error:', error);
