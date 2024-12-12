@@ -4,8 +4,11 @@
   "private": true,
   "homepage": "https://Shreyas-M-246418.github.io/job-try",
   "dependencies": {
+    "@octokit/rest": "^21.0.2",
+    "appwrite": "^16.0.2",
     "cra-template": "1.2.0",
     "firebase": "^11.0.2",
+    "firebase-functions": "^6.1.2",
     "gh-pages": "^6.2.0",
     "lucide-react": "^0.468.0",
     "react": "^19.0.0",

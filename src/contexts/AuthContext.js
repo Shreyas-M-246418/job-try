@@ -1,32 +1,15 @@
 import React, { createContext, useContext, useState } from 'react';
-import { auth, githubProvider } from '../config/firebase';
-import { signInWithPopup, signOut } from 'firebase/auth';
+import { account } from '../config/appwrite';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(() => {
-    try {
-      const savedUser = localStorage.getItem('user');
-      return savedUser ? JSON.parse(savedUser) : null;
-    } catch (error) {
-      console.error('Error parsing user data:', error);
-      localStorage.removeItem('user'); // Clear invalid data
-      return null;
-    }
-  });
+  const [user, setUser] = useState(null);
 
   const login = async () => {
     try {
-      const result = await signInWithPopup(auth, githubProvider);
-      const userData = {
-        email: result.user.email,
-        displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
-        uid: result.user.uid
-      };
-      setUser(userData);
-      localStorage.setItem('user', JSON.stringify(userData));
+      const response = await account.createOAuth2Session('github', 'http://localhost:3000', 'http://localhost:3000');
+      setUser(response);
       return true;
     } catch (error) {
       console.error("Error during login:", error);
@@ -36,9 +19,8 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await account.deleteSession('current');
       setUser(null);
-      localStorage.removeItem('user');
       return true;
     } catch (error) {
       console.error("Error during logout:", error);
