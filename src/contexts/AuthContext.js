@@ -36,7 +36,15 @@ export const AuthProvider = ({ children }) => {
     try {
       await authService.loginWithGitHub();
       const currentUser = await authService.getCurrentUser();
-      setUser(currentUser);
+      if (currentUser) {
+        const userData = {
+          email: currentUser.email,
+          displayName: currentUser.name,
+          uid: currentUser.$id
+        };
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
       return true;
     } catch (error) {
       console.error("Login Error:", error);
