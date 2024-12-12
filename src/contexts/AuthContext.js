@@ -8,8 +8,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      const response = await account.createOAuth2Session('github', 'http://localhost:3000', 'http://localhost:3000');
+      const response = await account.createOAuth2Session('https://shreyas-m-246418.github.io/job-try/#/jobs');
       setUser(response);
+      window.location.href = '/jobs';
       return true;
     } catch (error) {
       console.error("Error during login:", error);
