@@ -1,53 +1,46 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { account } from '../config/appwrite';
+import { account, githubLogin, logout } from '../config/appwrite'; 
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [accessToken, setAccessToken] = useState(null);
+
+  useEffect(() => {
+    const checkUser = async () => {
+      try {
+        const currentUser = await account.get();
+        const userData = {
+          email: currentUser.email,
+          displayName: currentUser.name,
+          uid: currentUser.$id
+        };
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      } catch (error) {
+        setUser(null);
+        localStorage.removeItem('user');
+      }
+    };
+
+    checkUser();
+  }, []);
 
   const login = async () => {
     try {
-      // Create the OAuth2 session
-      await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
-      // After the user is redirected back, check user status
-      await checkUserStatus();
+      await githubLogin();
+      return true;
     } catch (error) {
-      console.error("OAuth Login Error:", error);
-      throw error;
+      console.error("Login Error:", error);
+      return false;
     }
   };
 
-  const checkUserStatus = async () => {
+  const handleLogout = async () => {
     try {
-      const currentUser = await account.get();
-      setUser(currentUser);
-      return currentUser;
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        // Handle expired session
-        console.error("Session expired. Logging out...");
-        await logout();
-      } else {
-        console.error("Error checking user status:", error);
-      }
+      await logout();
       setUser(null);
-      return null;
-    }
-  };
-
-  useEffect(() => {
-    if (accessToken) {
-      checkUserStatus();
-    }
-  }, [accessToken]);
-
-  const logout = async () => {
-    try {
-      await account.deleteSession('current');
-      setUser(null);
-      setAccessToken(null);
+      localStorage.removeItem('user');
       return true;
     } catch (error) {
       console.error("Logout Error:", error);
@@ -56,7 +49,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, checkUserStatus }}>
+    <AuthContext.Provider value={{ user, login, logout: handleLogout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -70,4 +63,4 @@ export const useAuth = () => {
   return context;
 };
 
-export default AuthContext; 
+export default AuthContext;
