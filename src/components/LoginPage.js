@@ -1,19 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaGithub } from 'react-icons/fa';
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
-  const { login } = useAuth();
+  const { login, user } = useAuth();
   const navigate = useNavigate();
 
   const handleGithubLogin = async () => {
-    const success = await login();
-    if (success) {
+    await login();
+  };
+
+  useEffect(() => {
+    if (user) {
       navigate('/jobs');
     }
-  };
+  }, [user, navigate]);
 
   return (
     <div className="login-container">
