@@ -5,14 +5,13 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [accessToken, setAccessToken] = useState(null);
 
   const login = async () => {
     try {
-      await account.createOAuth2Session(
-        'github',
-        'https://shreyas-m-246418.github.io/job-try/#/jobs',
-        'https://shreyas-m-246418.github.io/job-try/#/login'
-      );
+      // Create the OAuth2 session
+      const session = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
+      setAccessToken(session.$id);
     } catch (error) {
       console.error("OAuth Login Error:", error);
       throw error;
@@ -21,6 +20,8 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserStatus = async () => {
     try {
+      // Refresh the access token before getting the user account
+      await account.updateSession(accessToken);
       const currentUser = await account.get();
       setUser(currentUser);
       return currentUser;
@@ -39,12 +40,13 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     checkUserStatus();
-  }, []);
+  }, [accessToken]);
 
   const logout = async () => {
     try {
       await account.deleteSession('current');
       setUser(null);
+      setAccessToken(null);
       return true;
     } catch (error) {
       console.error("Logout Error:", error);
@@ -67,6 +69,4 @@ export const useAuth = () => {
   return context;
 };
 
-export default AuthContext;
-
-
+export default AuthContext; 
