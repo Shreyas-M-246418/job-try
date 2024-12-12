@@ -9,18 +9,20 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const currentUser = await authService.getCurrentUser();
-        if (currentUser) {
-          const userData = {
-            email: currentUser.email,
-            displayName: currentUser.name,
-            uid: currentUser.$id
-          };
-          setUser(userData);
-          localStorage.setItem('user', JSON.stringify(userData));
-        } else {
-          setUser(null);
-          localStorage.removeItem('user');
+        if (!user) {
+          const currentUser = await authService.getCurrentUser();
+          if (currentUser) {
+            const userData = {
+              email: currentUser.email,
+              displayName: currentUser.name,
+              uid: currentUser.$id
+            };
+            setUser(userData);
+            localStorage.setItem('user', JSON.stringify(userData));
+          } else {
+            setUser(null);
+            localStorage.removeItem('user');
+          }
         }
       } catch (error) {
         console.error("Error checking user status:", error);
@@ -30,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     checkUser();
-  }, []);
+  }, [user]);
 
   const login = async () => {
     try {
