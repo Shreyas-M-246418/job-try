@@ -10,8 +10,8 @@ export const AuthProvider = ({ children }) => {
   const login = async () => {
     try {
       // Create the OAuth2 session
-      const session = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
-      setAccessToken(session.$id);
+      await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
+      // After the user is redirected back, check user status
       await checkUserStatus();
     } catch (error) {
       console.error("OAuth Login Error:", error);
@@ -21,13 +21,11 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserStatus = async () => {
     try {
-      // Refresh the access token before getting the user account
-      await account.updateSession(accessToken);
       const currentUser = await account.get();
       setUser(currentUser);
       return currentUser;
     } catch (error) {
-      if (error.response.status === 401) {
+      if (error.response && error.response.status === 401) {
         // Handle expired session
         console.error("Session expired. Logging out...");
         await logout();
@@ -35,7 +33,6 @@ export const AuthProvider = ({ children }) => {
         console.error("Error checking user status:", error);
       }
       setUser(null);
-      setAccessToken(null);
       return null;
     }
   };
