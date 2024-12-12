@@ -8,15 +8,14 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      // Directly use createOAuth2Session with GitHub provider
       await account.createOAuth2Session(
         'github',
-        'https://shreyas-m-246418.github.io/job-try/#/jobs',  // Success URL
-        'https://shreyas-m-246418.github.io/job-try/#/login'  // Failure URL
+        'https://shreyas-m-246418.github.io/job-try/#/jobs',
+        'https://shreyas-m-246418.github.io/job-try/#/login'
       );
     } catch (error) {
       console.error("OAuth Login Error:", error);
-      throw error;  // Re-throw to allow caller to handle
+      throw error;
     }
   };
 
@@ -26,6 +25,13 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
       return currentUser;
     } catch (error) {
+      if (error.response.status === 401) {
+        // Handle expired session
+        console.error("Session expired. Logging out...");
+        await logout();
+      } else {
+        console.error("Error checking user status:", error);
+      }
       setUser(null);
       return null;
     }
