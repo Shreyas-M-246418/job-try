@@ -12,8 +12,8 @@ export const githubLogin = async () => {
     // Replace 'localhost' with your actual deployment URL for callback
     await account.createOAuth2Session(
       'github', 
-      `https://shreyas-m-246418.github.io/job-try/#/jobs/#/jobs`, 
-      `https://shreyas-m-246418.github.io/job-try/#/jobs/#/login`
+      `https://shreyas-m-246418.github.io/job-try/#/jobs`, 
+      `https://shreyas-m-246418.github.io/job-try/#/login`
     );
   } catch (error) {
     console.error('GitHub Login Error:', error);
