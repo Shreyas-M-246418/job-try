@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { account, githubLogin, logout } from '../config/appwrite'; 
+import authService from '../services/authService';
 
 const AuthContext = createContext();
 
@@ -8,8 +8,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkUser = async () => {
-      try {
-        const currentUser = await account.get();
+      const currentUser = await authService.getCurrentUser();
+      if (currentUser) {
         const userData = {
           email: currentUser.email,
           displayName: currentUser.name,
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
         };
         setUser(userData);
         localStorage.setItem('user', JSON.stringify(userData));
-      } catch (error) {
+      } else {
         setUser(null);
         localStorage.removeItem('user');
       }
@@ -28,7 +28,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      await githubLogin();
+      await authService.loginWithGitHub();
+      const currentUser = await authService.getCurrentUser();
+      setUser(currentUser);
       return true;
     } catch (error) {
       console.error("Login Error:", error);
@@ -38,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await authService.logout();
       setUser(null);
       localStorage.removeItem('user');
       return true;

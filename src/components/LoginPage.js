@@ -12,10 +12,10 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       await login();
-      // Note: The actual navigation will likely happen via Appwrite's redirect
+      navigate('/jobs'); // Redirect to jobs page after successful login
     } catch (error) {
       console.error("Login failed:", error);
-      // Optionally handle login failure
+      // Optionally show an error message to the user
     }
   };
 
