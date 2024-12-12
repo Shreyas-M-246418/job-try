@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { account } from '../config/appwrite';
-import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -9,15 +8,15 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
+      // Directly use createOAuth2Session with GitHub provider
       await account.createOAuth2Session(
-        'github', 
+        'github',
         'https://shreyas-m-246418.github.io/job-try/#/jobs',  // Success URL
         'https://shreyas-m-246418.github.io/job-try/#/login'  // Failure URL
       );
-      return true;
     } catch (error) {
-      console.error("Error during login:", error);
-      return false;
+      console.error("OAuth Login Error:", error);
+      throw error;  // Re-throw to allow caller to handle
     }
   };
 
@@ -25,8 +24,10 @@ export const AuthProvider = ({ children }) => {
     try {
       const currentUser = await account.get();
       setUser(currentUser);
+      return currentUser;
     } catch (error) {
       setUser(null);
+      return null;
     }
   };
 
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       return true;
     } catch (error) {
-      console.error("Error during logout:", error);
+      console.error("Logout Error:", error);
       return false;
     }
   };
@@ -61,3 +62,5 @@ export const useAuth = () => {
 };
 
 export default AuthContext;
+
+

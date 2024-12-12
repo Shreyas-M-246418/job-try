@@ -1,22 +1,23 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FaGithub } from 'react-icons/fa';
 import '../styles/LoginPage.css';
 
 const LoginPage = () => {
-  const { login, user } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleGithubLogin = async () => {
-    await login();
-  };
-
-  useEffect(() => {
-    if (user) {
-      navigate('/jobs');
+  const handleGithubLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login();
+      // Note: The actual navigation will likely happen via Appwrite's redirect
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Optionally handle login failure
     }
-  }, [user, navigate]);
+  };
 
   return (
     <div className="login-container">
