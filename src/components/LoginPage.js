@@ -8,14 +8,10 @@ const LoginPage = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleGithubLogin = async (e) => {
-    e.preventDefault();
-    try {
-      await login();
-      navigate('/jobs'); // Redirect to jobs page after successful login
-    } catch (error) {
-      console.error("Login failed:", error);
-      // Optionally show an error message to the user
+  const handleGithubLogin = async () => {
+    const success = await login();
+    if (success) {
+      navigate('/jobs');
     }
   };
 

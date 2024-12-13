@@ -1,73 +1,53 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import authService from '../services/authService';
+import React, { createContext, useContext, useState } from 'react';
+import { auth, githubProvider } from '../config/firebase';
+import { signInWithPopup, signOut } from 'firebase/auth';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const checkUser = async () => {
-      try {
-        if (!user) {
-          const currentUser = await authService.getCurrentUser();
-          if (currentUser) {
-            const userData = {
-              email: currentUser.email,
-              displayName: currentUser.name,
-              uid: currentUser.$id
-            };
-            setUser(userData);
-            localStorage.setItem('user', JSON.stringify(userData));
-          } else {
-            setUser(null);
-            localStorage.removeItem('user');
-          }
-        }
-      } catch (error) {
-        console.error("Error checking user status:", error);
-        setUser(null);
-        localStorage.removeItem('user');
-      }
-    };
-
-    checkUser();
-  }, [user]);
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      localStorage.removeItem('user'); // Clear invalid data
+      return null;
+    }
+  });
 
   const login = async () => {
     try {
-      await authService.loginWithGitHub();
-      const currentUser = await authService.getCurrentUser();
-      if (currentUser) {
-        const userData = {
-          email: currentUser.email,
-          displayName: currentUser.name,
-          uid: currentUser.$id
-        };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
+      const result = await signInWithPopup(auth, githubProvider);
+      const userData = {
+        email: result.user.email,
+        displayName: result.user.displayName,
+        photoURL: result.user.photoURL,
+        uid: result.user.uid
+      };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
       return true;
     } catch (error) {
-      console.error("Login Error:", error);
+      console.error("Error during login:", error);
       return false;
     }
   };
 
-  const handleLogout = async () => {
+  const logout = async () => {
     try {
-      await authService.logout();
+      await signOut(auth);
       setUser(null);
       localStorage.removeItem('user');
       return true;
     } catch (error) {
-      console.error("Logout Error:", error);
+      console.error("Error during logout:", error);
       return false;
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout: handleLogout }}>
+    <AuthContext.Provider value={{ user, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -81,4 +61,4 @@ export const useAuth = () => {
   return context;
 };
 
-export default AuthContext;
+export default AuthContext; 
