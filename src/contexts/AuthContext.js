@@ -122,8 +122,6 @@ export const AuthProvider = ({ children }) => {
         'https://shreyas-m-246418.github.io/job-try/#/jobs',
         'https://shreyas-m-246418.github.io/job-try/#/login'
       );
-      // The user will be redirected to GitHub for authentication
-      // After successful authentication, they will be redirected back to your app
     } catch (error) {
       console.error("Error during login:", error);
       return false;
@@ -132,19 +130,18 @@ export const AuthProvider = ({ children }) => {
 
   const checkUserSession = async () => {
     try {
-      const userSession = await account.get();
-      if (userSession) {
-        const userData = {
-          email: userSession.email,
-          displayName: userSession.name,
-          photoURL: userSession.avatar,
-          uid: userSession.$id
-        };
-        setUser(userData);
-        localStorage.setItem('user', JSON.stringify(userData));
-      }
+      const userSession = await account.get(); 
+      const userData = {
+        email: userSession.email,
+        displayName: userSession.name,
+        photoURL: userSession.avatar,
+        uid: userSession.$id
+      };
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
     } catch (error) {
       console.error("Error fetching user session:", error);
+      setUser(null); // Clear user state if not authenticated
     }
   };
 
