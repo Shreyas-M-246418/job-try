@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
-import { auth, githubProvider } from '../config/firebase';
-import { signInWithPopup, signOut } from 'firebase/auth';
+import { account } from '../config/appwriteConfig';
 
 const AuthContext = createContext();
 
@@ -18,12 +17,12 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
-      const result = await signInWithPopup(auth, githubProvider);
+      const response = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
       const userData = {
-        email: result.user.email,
-        displayName: result.user.displayName,
-        photoURL: result.user.photoURL,
-        uid: result.user.uid
+        email: response.email,
+        displayName: response.name,
+        photoURL: response.avatar,
+        uid: response.$id
       };
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -36,7 +35,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await signOut(auth);
+      await account.deleteSession('current');
       setUser(null);
       localStorage.removeItem('user');
       return true;
