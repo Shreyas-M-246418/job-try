@@ -1,4 +1,4 @@
-/*
+
 import React, { createContext, useContext, useState } from 'react';
 import { account } from '../config/appwriteConfig';
 
@@ -16,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
- /* const login = async () => {
+ const login = async () => {
     try {
       console.log("Attempting to log in...");
       const response = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error during login:", error);
       return false;
     }
-  };*/
+  };
 /*
   const login = async () => {
     try {
@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
       console.error("Error during login:", error);
       return false;
     }
-  };
+  };*/
 
   const logout = async () => {
     try {
@@ -94,9 +94,9 @@ export const useAuth = () => {
 };
 
 export default AuthContext; 
-*/
 
 
+/*
 import React, { createContext, useContext, useState } from 'react';
 import { account } from '../config/appwriteConfig';
 
@@ -173,3 +173,4 @@ export const useAuth = () => {
 };
 
 export default AuthContext;
+*/
