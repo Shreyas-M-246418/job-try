@@ -1,3 +1,4 @@
+/*
 import React, { createContext, useContext, useState } from 'react';
 import { account } from '../config/appwriteConfig';
 
@@ -40,7 +41,7 @@ export const AuthProvider = ({ children }) => {
       return false;
     }
   };*/
-
+/*
   const login = async () => {
     try {
       console.log("Attempting to log in...");
@@ -93,3 +94,85 @@ export const useAuth = () => {
 };
 
 export default AuthContext; 
+*/
+
+
+import React, { createContext, useContext, useState } from 'react';
+import { account } from '../config/appwriteConfig';
+
+const AuthContext = createContext();
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(() => {
+    try {
+      const savedUser = localStorage.getItem('user');
+      return savedUser ? JSON.parse(savedUser) : null;
+    } catch (error) {
+      console.error('Error parsing user data:', error);
+      localStorage.removeItem('user'); // Clear invalid data
+      return null;
+    }
+  });
+
+  const login = async () => {
+    try {
+      console.log("Attempting to log in...");
+      await account.createOAuth2Session(
+        'github',
+        'https://shreyas-m-246418.github.io/job-try/#/jobs',
+        'https://shreyas-m-246418.github.io/job-try/#/login'
+      );
+      // The user will be redirected to GitHub for authentication
+      // After successful authentication, they will be redirected back to your app
+    } catch (error) {
+      console.error("Error during login:", error);
+      return false;
+    }
+  };
+
+  const checkUserSession = async () => {
+    try {
+      const userSession = await account.get();
+      if (userSession) {
+        const userData = {
+          email: userSession.email,
+          displayName: userSession.name,
+          photoURL: userSession.avatar,
+          uid: userSession.$id
+        };
+        setUser(userData);
+        localStorage.setItem('user', JSON.stringify(userData));
+      }
+    } catch (error) {
+      console.error("Error fetching user session:", error);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      await account.deleteSession('current');
+      setUser(null);
+      localStorage.removeItem('user');
+      return true;
+    } catch (error) {
+      console.error("Error during logout:", error);
+      return false;
+    }
+  };
+
+  return (
+    <AuthContext.Provider value={{ user, login, logout, checkUserSession }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+export default AuthContext;
