@@ -20,6 +20,11 @@ export const AuthProvider = ({ children }) => {
       console.log("Attempting to log in...");
       const response = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
       console.log("Login response:", response);
+      
+      if (!response) {
+        throw new Error("Login response is undefined");
+      }
+
       const userData = {
         email: response.email,
         displayName: response.name,
