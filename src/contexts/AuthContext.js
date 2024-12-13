@@ -17,7 +17,9 @@ export const AuthProvider = ({ children }) => {
 
   const login = async () => {
     try {
+      console.log("Attempting to log in...");
       const response = await account.createOAuth2Session('github', 'https://shreyas-m-246418.github.io/job-try/#/jobs', 'https://shreyas-m-246418.github.io/job-try/#/login');
+      console.log("Login response:", response);
       const userData = {
         email: response.email,
         displayName: response.name,
