@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { account } from '../config/appwriteConfig';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
@@ -31,6 +32,7 @@ export const AuthProvider = ({ children }) => {
         photoURL: response.avatar,
         uid: response.$id
       };
+      console.log("User data:", userData);
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
       return true;

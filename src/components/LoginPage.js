@@ -11,7 +11,10 @@ const LoginPage = () => {
   const handleGithubLogin = async () => {
     const success = await login();
     if (success) {
+      console.log("Login successful, navigating to jobs page");
       navigate('/jobs');
+    } else {
+      console.log("Login failed.");
     }
   };
 
