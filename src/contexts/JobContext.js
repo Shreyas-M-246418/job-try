@@ -1,53 +1,37 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { db } from '../config/firebase';
+import { collection, addDoc, getDocs } from 'firebase/firestore';
 
 const JobContext = createContext();
 
 export const JobProvider = ({ children }) => {
-  const [jobs, setJobs] = useState(() => {
-    try {
-      const savedJobs = localStorage.getItem('jobs');
-      return savedJobs ? JSON.parse(savedJobs) : [];
-    } catch (error) {
-      console.error('Error loading jobs:', error);
-      return [];
-    }
-  });
+  const [jobs, setJobs] = useState([]);
 
-  const saveJobs = (updatedJobs) => {
-    try {
-      localStorage.setItem('jobs', JSON.stringify(updatedJobs));
-    } catch (error) {
-      console.error('Error saving jobs:', error);
-    }
-  };
-
-  const addJob = (newJob) => {
-    const jobWithId = {
-      ...newJob,
-      id: Date.now(),
-      createdAt: new Date().toISOString()
+  useEffect(() => {
+    const fetchJobs = async () => {
+      const jobsCollection = collection(db, 'jobs');
+      const jobSnapshot = await getDocs(jobsCollection);
+      const jobList = jobSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setJobs(jobList);
     };
-    const updatedJobs = [...jobs, jobWithId];
-    setJobs(updatedJobs);
-    saveJobs(updatedJobs);
-  };
 
-  const updateJob = (jobId, updatedData) => {
-    const updatedJobs = jobs.map(job => 
-      job.id === jobId ? { ...job, ...updatedData } : job
-    );
-    setJobs(updatedJobs);
-    saveJobs(updatedJobs);
-  };
+    fetchJobs();
+  }, []);
 
-  const deleteJob = (jobId) => {
-    const updatedJobs = jobs.filter(job => job.id !== jobId);
-    setJobs(updatedJobs);
-    saveJobs(updatedJobs);
+  const addJob = async (newJob) => {
+    try {
+      const docRef = await addDoc(collection(db, 'jobs'), {
+        ...newJob,
+        createdAt: new Date().toISOString()
+      });
+      setJobs(prev => [...prev, { id: docRef.id, ...newJob }]);
+    } catch (error) {
+      console.error('Error adding job: ', error);
+    }
   };
 
   return (
-    <JobContext.Provider value={{ jobs, addJob, updateJob, deleteJob }}>
+    <JobContext.Provider value={{ jobs, addJob }}>
       {children}
     </JobContext.Provider>
   );

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useJobs } from '../contexts/JobContext';
+import { useNavigate } from 'react-router-dom';
 import '../styles/HirePage.css';
 
 const HirePage = () => {
@@ -27,12 +27,12 @@ const HirePage = () => {
     }));
   };
 
-  const handleSubmit = () => {
-    addJob({
+  const handleSubmit = async () => {
+    await addJob({
       ...formData,
       createdBy: 'Anonymous',
     });
-    navigate('/');
+    navigate('/jobs');
   };
 
   return (
