@@ -7,7 +7,7 @@ import '../styles/JobsPage.css';
 
 const JobsPage = () => {
   const { jobs } = useJobs();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [filters, setFilters] = useState({
     title: '',
@@ -119,6 +119,7 @@ const JobsPage = () => {
   const handleArchivedClick = () => {
     navigate('/display-jobs');
   };
+
   const filteredJobs = jobs.filter(job => {
     // Filter by title/company name
     const titleMatch = job.title.toLowerCase().includes(filters.title.toLowerCase()) ||

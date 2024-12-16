@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useJobs } from '../contexts/JobContext';
+import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import '../styles/HirePage.css';
 
 const HirePage = () => {
   const { addJob } = useJobs();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     companyName: '',
@@ -30,7 +32,8 @@ const HirePage = () => {
   const handleSubmit = async () => {
     await addJob({
       ...formData,
-      createdBy: 'Anonymous',
+      createdBy: user?.displayName,
+      userId: user?.uid,
     });
     navigate('/jobs');
   };
