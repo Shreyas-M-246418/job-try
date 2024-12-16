@@ -1,70 +1,163 @@
-# Getting Started with Create React App
+# Job Hub- Job Listing Application
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project is a job listing application built with React and Firebase. It allows users to create, view, and filter job listings.
 
-## Available Scripts
+## Table of Contents
 
-In the project directory, you can run:
+- [Prerequisites](#prerequisites)
+- [Installing Dependencies](#installing-dependencies)
+- [Setting Up Firebase](#setting-up-firebase)
+- [Setting Up GitHub OAuth](#setting-up-github-oauth)
+- [Environment Variables](#environment-variables)
+- [Deploying to GitHub Pages](#deploying-to-github-pages)
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Before you begin, ensure you have the following installed on your machine:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- Node.js (v14 or later)
+- npm (comes with Node.js)
+- A Firebase account
+- A GitHub account
 
-### `npm test`
+## Installing Dependencies
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Navigate to the project directory and Install the necessary dependencies:
+    
+    npm install
 
-### `npm run build`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Setting Up Firebase
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Go to the [Firebase Console](https://console.firebase.google.com/).
+2. Click on "Add project" and follow the prompts to create a new Firebase project.
+3. Once your project is created, navigate to the "Firestore Database" section and click "Create Database". Choose "Start in Test Mode" for development purposes.
+4. In the "Project settings" (gear icon), go to the "General" tab and find your Firebase configuration. You will need the following details:
+   - API Key
+   - Auth Domain
+   - Project ID
+   - Storage Bucket
+   - Messaging Sender ID
+   - App ID
+5. Create a new collection named `jobs` in Firestore.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## Setting Up GitHub OAuth
 
-### `npm run eject`
+1. Go to the [GitHub Developer Settings](https://github.com/settings/developers).
+2. Click on "OAuth Apps" and then "New OAuth App".
+3. Fill in the required fields:
+   - **Application name**: Your app's name
+   - **Homepage URL**: `https://YOUR_USERNAME.github.io/YOUR_REPO_NAME`
+   - **Authorization callback URL**: `http://localhost:3000/auth/callback` *You will need to update the callback url after enabling Auth in Firebase*
+4. After creating the app, you will receive a Client ID and Client Secret. You will need these for your Firebase authentication setup.
+5. In the Firebase Console, navigate to "Authentication" and then "Sign-in method". Enable "GitHub" as a sign-in provider and enter the Client ID and Client Secret from your GitHub OAuth app.
+6. Copy the authorisation callback URL provided there and update it in the Github OAuth app's callback field.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## Environment Variables
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Create a `.env` file in the root of your project and add the following variables:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+REACT_APP_FIREBASE_API_KEY=your_api_key
+REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
+REACT_APP_FIREBASE_PROJECT_ID=your_project_id
+REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_messaging_sender_id
+REACT_APP_FIREBASE_APP_ID=your_app_id
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+Replace the placeholders with the actual values from your Firebase project settings.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## Deploying to GitHub Pages
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+1. In your project directory, open the `package.json` file and add the following line to specify the homepage:
 
-### Code Splitting
+   ```
+   "homepage": "https://YOUR_USERNAME.github.io/YOUR_REPO_NAME",
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+   Replace `YOUR_USERNAME` with your GitHub username.
 
-### Analyzing the Bundle Size
+2. Create a GitHub repository if you haven't already.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+3. Add the remote repository to your local project:
 
-### Making a Progressive Web App
+   ```
+   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+4. Commit your changes:
 
-### Advanced Configuration
+   ```
+   git add .
+   git commit -m "Set up GitHub Pages deployment"
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+5. Push your changes to the main branch:
 
-### Deployment
+   ```
+   git push origin main
+   ```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+6. Create a GitHub Actions workflow for deployment. Create a file named `.github/workflows/deploy.yml` and add the following content:
 
-### `npm run build` fails to minify
+   ```yaml
+   name: Deploy to GitHub Pages
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+   on:
+     push:
+       branches:
+         - main
+
+   jobs:
+     build-and-deploy:
+       runs-on: ubuntu-latest
+       steps:
+         - uses: actions/checkout@v2
+         
+         - name: Setup Node
+           uses: actions/setup-node@v2
+           with:
+             node-version: '16'
+             
+         - name: Install Dependencies
+           run: npm install
+           
+         - name: Build
+           env:
+             REACT_APP_FIREBASE_API_KEY: ${{ secrets.REACT_APP_FIREBASE_API_KEY }}
+             REACT_APP_FIREBASE_AUTH_DOMAIN: ${{ secrets.REACT_APP_FIREBASE_AUTH_DOMAIN }}
+             REACT_APP_FIREBASE_PROJECT_ID: ${{ secrets.REACT_APP_FIREBASE_PROJECT_ID }}
+             REACT_APP_FIREBASE_STORAGE_BUCKET: ${{ secrets.REACT_APP_FIREBASE_STORAGE_BUCKET }}
+             REACT_APP_FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.REACT_APP_FIREBASE_MESSAGING_SENDER_ID }}
+             REACT_APP_FIREBASE_APP_ID: ${{ secrets.REACT_APP_FIREBASE_APP_ID }}
+           run: npm run build
+           
+         - name: Deploy
+           uses: JamesIves/github-pages-deploy-action@4.1.5
+           with:
+             branch: gh-pages
+             folder: build
+   ```
+
+7. Create GitHub Secrets for your Firebase configuration:
+   - Go to your GitHub repository.
+   - Click on "Settings" > "Secrets and variables" > "Actions".
+   - Click on "New repository secret" and add the following secrets:
+     - `REACT_APP_FIREBASE_API_KEY`
+     - `REACT_APP_FIREBASE_AUTH_DOMAIN`
+     - `REACT_APP_FIREBASE_PROJECT_ID`
+     - `REACT_APP_FIREBASE_STORAGE_BUCKET`
+     - `REACT_APP_FIREBASE_MESSAGING_SENDER_ID`
+     - `REACT_APP_FIREBASE_APP_ID`
+
+8. Commit and push the `.github` folder to your repository:
+
+   ```
+   git add .github
+   git commit -m "Add GitHub Actions workflow for deployment"
+   git push origin main
+   ```
+9. To deploy the app run the command:
+    npm run deploy
+
+After the workflow runs successfully, your app will be deployed to GitHub Pages at the URL specified in the `homepage` field of your `package.json`.

@@ -28,14 +28,6 @@ const JobsPage = () => {
     'Data Science',
     'Machine Learning'
   ];
-/*
-  const handleLogout = async () => {
-    const success = await logout();
-    if (success) {
-      navigate('/');
-    }
-  };
-  */
 
   const handleCreateJob = () => {
     navigate('/hire');
