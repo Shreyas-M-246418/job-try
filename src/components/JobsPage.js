@@ -115,7 +115,7 @@ const JobsPage = () => {
 
   const filteredJobs = jobs.filter(job => {
     // First check if the job was created by the current user
-    const isUsersJob = job.createdBy === user?.email;
+    const isUsersJob = job.createdBy === user?.uid;
 
     if (!isUsersJob) return false;
 
