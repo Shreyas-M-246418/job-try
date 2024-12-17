@@ -153,9 +153,6 @@ const HirePage = () => {
                   placeholder="Paste company description or about text here"
                   className="form-textarea"
                 />
-                <p className="helper-text">
-                  Please paste relevant content about the company culture and work environment
-                </p>
               </div>
             </div>
 
