@@ -19,6 +19,7 @@ const HirePage = () => {
     description: '',
     salaryRange: '',
     applyLink: '',
+    aboutLink: '',
   });
 
   const handleChange = (e) => {
@@ -139,6 +140,17 @@ const HirePage = () => {
                   value={formData.applyLink}
                   onChange={handleChange}
                   placeholder="Enter Apply link"
+                  className="form-input"
+                />
+              </div>
+
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="aboutLink"
+                  value={formData.aboutLink}
+                  onChange={handleChange}
+                  placeholder="Enter Company Career/About Page Link"
                   className="form-input"
                 />
               </div>

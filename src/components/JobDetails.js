@@ -1,7 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { getCompanyInfo } from '../services/companyInfoService';
 import '../styles/DisplayJobsPage.css';
 
 const JobDetails = ({ job, onClose }) => {
+  const [companyInfo, setCompanyInfo] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchCompanyInfo = async () => {
+      if (job.aboutLink) {
+        setLoading(true);
+        const info = await getCompanyInfo(job.aboutLink);
+        setCompanyInfo(info);
+        setLoading(false);
+      }
+    };
+
+    fetchCompanyInfo();
+  }, [job.aboutLink]);
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (event.target.classList.contains('job-details-overlay')) {
@@ -71,6 +88,19 @@ const JobDetails = ({ job, onClose }) => {
           <h3>Job Description</h3>
           <p>{job.description}</p>
         </div>
+
+        {job.aboutLink && (
+          <div className="company-culture-section">
+            <h3>Company Culture & Work Life</h3>
+            {loading ? (
+              <div className="loader"></div>
+            ) : (
+              <div className="company-culture-content">
+                {companyInfo || "No information available"}
+              </div>
+            )}
+          </div>
+        )}
 
         <div className="job-footer">
           <p>Posted by: {job.createdBy || 'Anonymous'}</p>

@@ -4,6 +4,7 @@
   "private": true,
   "homepage": "https://Shreyas-M-246418.github.io/job-try",
   "dependencies": {
+    "@google/generative-ai": "^0.21.0",
     "@octokit/rest": "^21.0.2",
     "appwrite": "^16.0.2",
     "cra-template": "1.2.0",
