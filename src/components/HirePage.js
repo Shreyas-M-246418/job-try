@@ -33,7 +33,8 @@ const HirePage = () => {
   const handleSubmit = async () => {
     await addJob({
       ...formData,
-      createdBy: user?.displayName,
+      createdBy: user?.email,
+      userName: user?.displayName,
       userId: user?.uid,
     });
     navigate('/jobs');

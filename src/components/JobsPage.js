@@ -114,7 +114,12 @@ const JobsPage = () => {
   };
 
   const filteredJobs = jobs.filter(job => {
-    // Filter by title/company name
+    // First check if the job was created by the current user
+    const isUsersJob = job.createdBy === user?.email;
+
+    if (!isUsersJob) return false;
+
+    // Then apply the other filters
     const titleMatch = job.title.toLowerCase().includes(filters.title.toLowerCase()) ||
       job.companyName?.toLowerCase().includes(filters.title.toLowerCase());
 
@@ -137,13 +142,8 @@ const JobsPage = () => {
     const workTypeMatch = filters.workType.length === 0 ||
       filters.workType.includes(job.workType?.toLowerCase());
 
-    // Return true only if all conditions match
-    return titleMatch && 
-           locationMatch && 
-           userTypeMatch && 
-           domainMatch && 
-           employmentTypeMatch && 
-           workTypeMatch;
+    return titleMatch && locationMatch && userTypeMatch && 
+           domainMatch && employmentTypeMatch && workTypeMatch;
   });
 
   const myJobs = jobs.filter(job => job.createdBy === user?.email);

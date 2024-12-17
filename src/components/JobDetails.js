@@ -103,7 +103,7 @@ const JobDetails = ({ job, onClose }) => {
         )}
 
         <div className="job-footer">
-          <p>Posted by: {job.createdBy || 'Anonymous'}</p>
+          <p>Posted by: {job.userName}</p>
           <button className="apply-button" onClick={handleApply}>
             Apply
           </button>
