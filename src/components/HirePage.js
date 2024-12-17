@@ -19,7 +19,8 @@ const HirePage = () => {
     description: '',
     salaryRange: '',
     applyLink: '',
-    aboutLink: '',
+   // aboutLink: '',
+    companyDescription: '',
   });
 
   const handleChange = (e) => {
@@ -143,16 +144,18 @@ const HirePage = () => {
                   className="form-input"
                 />
               </div>
-
+              
               <div className="form-group">
-                <input
-                  type="text"
-                  name="aboutLink"
-                  value={formData.aboutLink}
+                <textarea
+                  name="companyDescription"
+                  value={formData.companyDescription}
                   onChange={handleChange}
-                  placeholder="Enter Company Career/About Page Link"
-                  className="form-input"
+                  placeholder="Paste company description or about text here"
+                  className="form-textarea"
                 />
+                <p className="helper-text">
+                  Please paste relevant content about the company culture and work environment
+                </p>
               </div>
             </div>
 
@@ -203,3 +206,18 @@ const HirePage = () => {
 };
 
 export default HirePage;
+
+
+
+/*
+<div className="form-group">
+                <input
+                  type="text"
+                  name="aboutLink"
+                  value={formData.aboutLink}
+                  onChange={handleChange}
+                  placeholder="Enter Company Career/About Page Link"
+                  className="form-input"
+                />
+              </div>
+              */
